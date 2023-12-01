@@ -1,4 +1,5 @@
 import click
+from labelbox import Client, MediaType, Project
 
 
 @click.group()
@@ -11,28 +12,47 @@ def projects():
 
 @projects.command()
 @click.option(
+    "--match_projects",
+    required=True,
+    help="Match projects with the given name",
+    type=str,
+)
+@click.option(
     "--n", default=10, help="List number of available projects.", show_default=True
 )
-def list(n):
+@click.pass_obj
+def list(client: Client, match_projects: str, n: int):
     """
-    Lists available projects.
+    Lists available projects with matching name.
+    By default shows only first 10.
     """
-    ...
+    projects = client.get_projects(where=Project.name == match_projects)
+
+    # Apperantly Click for some reasons cannot convert generators into lists
+    # hence this ugly workaround
+    for project in projects:
+        click.echo(project)
+
+        n -= 1
+        if n == 0:
+            break
 
 
 @projects.command()
 @click.argument("project_id", nargs=1)
-def get(project_id):
+@click.pass_obj
+def get(client: Client, project_id: str):
     """
     Retrieves project with given ID.
     """
-    ...
+    project = client.get_project(project_id)
+    click.echo(project)
 
 
 @projects.command()
 @click.option("--name", required=True, type=str, help="Name for a project.")
 @click.option(
-    "--media_type",
+    "--project_type",
     required=True,
     type=str,
     help="Type of the project. Ex: image, video etc.",
@@ -44,8 +64,13 @@ def get(project_id):
     type=str,
     help="Project description. Default is empty string.",
 )
-def create(name, description, media_type):
+@click.pass_obj
+def create(client: Client, name: str, description: str, project_type: str):
     """
     Creates new project.
     """
-    ...
+    media_type = MediaType(project_type.upper())
+    project = client.create_project(
+        name=name, description=description, media_type=media_type
+    )
+    click.echo(f"New project has been created: \n{project}")
