@@ -43,14 +43,19 @@ def list(client: Client, match_projects: str, n: int):
 @click.pass_obj
 def get(client: Client, project_id: str):
     """
-    Retrieves project with given ID.
+    Retrieves project by ID.
     """
     project = client.get_project(project_id)
     click.echo(project)
 
 
 @projects.command()
-@click.option("--name", required=True, type=str, help="Name for a project.")
+@click.option(
+    "--name",
+    required=True,
+    type=str,
+    help="Name for a project. But between double quotes if name contains spaces.",
+)
 @click.option(
     "--project_type",
     required=True,
@@ -74,3 +79,15 @@ def create(client: Client, name: str, description: str, project_type: str):
         name=name, description=description, media_type=media_type
     )
     click.echo(f"New project has been created: \n{project}")
+
+
+@projects.command()
+@click.argument("project_id", nargs=1)
+@click.pass_obj
+def delete(client: Client, project_id: str):
+    """
+    Delete project by ID.
+    """
+    project = client.get_project(project_id)
+    project.delete()
+    click.echo(f"Project with ID {project_id} has been deleted.")
