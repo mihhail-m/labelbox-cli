@@ -1,4 +1,3 @@
-import json
 from pathlib import Path
 
 import click
@@ -6,29 +5,9 @@ from click import Context
 from labelbox import Client
 
 from .commands.projects import projects
+from .utils import find_active_profile, read_json_file, write_json_file
 
 CONFIG_FILE = Path.home() / ".labelbox-cli.json"
-
-
-def find_active_profile(profiles, key="active", value=True):
-    if key in profiles and profiles[key] == value:
-        return profiles
-
-    for _, v in profiles.items():
-        if isinstance(v, dict):
-            result = find_active_profile(v, key, value)
-            if result is not None:
-                return result
-
-
-def read_config_file(config_file_path):
-    with open(config_file_path, "rb") as f:
-        return json.load(f)
-
-
-def write_to_config_file(config_file_path, profile):
-    with open(config_file_path, "w+", encoding="utf-8") as f:
-        json.dump(profile, f, ensure_ascii=False, indent=4)
 
 
 # TODO: Add support for multiple profiles
@@ -36,7 +15,7 @@ def write_to_config_file(config_file_path, profile):
 @click.pass_context
 def cli(ctx: Context):
     if CONFIG_FILE.is_file():
-        content = read_config_file(CONFIG_FILE)
+        content = read_json_file(CONFIG_FILE)
         profile = find_active_profile(content)
         client = Client(api_key=profile["api_key"], endpoint=profile["endpoint"])  # type: ignore
         ctx.obj = client
@@ -59,7 +38,7 @@ def cli(ctx: Context):
             }
         }
 
-        write_to_config_file(CONFIG_FILE, profile)
+        write_json_file(CONFIG_FILE, profile)
         click.echo(f"Configuration saved into: {CONFIG_FILE}")
 
 
