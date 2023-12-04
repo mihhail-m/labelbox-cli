@@ -4,6 +4,7 @@ import click
 from click import Context
 from labelbox import Client
 
+from .commands.ontology import ontology
 from .commands.projects import projects
 from .utils import find_active_profile, read_json_file, write_json_file
 
@@ -43,3 +44,4 @@ def cli(ctx: Context):
 
 
 cli.add_command(projects)
+cli.add_command(ontology)
