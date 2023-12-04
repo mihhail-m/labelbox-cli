@@ -1,5 +1,12 @@
+import json
+import sys
+import time
+from pathlib import Path
+
 import click
 from labelbox import Client, MediaType, Project
+
+from ..utils import write_json_file
 
 
 @click.group()
@@ -91,3 +98,58 @@ def delete(client: Client, project_id: str):
     project = client.get_project(project_id)
     project.delete()
     click.echo(f"Project with ID {project_id} has been deleted.")
+
+
+@projects.command()
+@click.argument("project_id", nargs=1)
+@click.option("--attachements", is_flag=True, default=False, show_default=True)
+@click.option("--metadata_fields", is_flag=True, default=False, show_default=True)
+@click.option("--data_row_details", is_flag=True, default=False, show_default=True)
+@click.option("--project_details", is_flag=True, default=False, show_default=True)
+@click.option("--performance_details", is_flag=True, default=False, show_default=True)
+@click.option(
+    "--save",
+    is_flag=True,
+    default=False,
+    show_default=True,
+    help="Saves export results into file with the following format: project_export_epoch_time.json.",
+)
+@click.pass_obj
+def export(
+    client: Client,
+    project_id: str,
+    attachements: bool,
+    metadata_fields: bool,
+    data_row_details: bool,
+    project_details: bool,
+    performance_details: bool,
+    save: bool,
+):
+    """
+    Exports project's information.
+    """
+    export_params = {
+        "attachments": attachements,
+        "metadata_fields": metadata_fields,
+        "data_row_details": data_row_details,
+        "project_details": project_details,
+        "performance_details": performance_details,
+    }
+    project = client.get_project(project_id)
+    export_task = project.export_v2(params=export_params)  # type: ignore
+    export_task.wait_till_done()
+
+    if err := export_task.errors:
+        click.echo("There were errors in the export.")
+        click.echo(err)
+        sys.exit(1)
+
+    if save:
+        filename = Path.home() / f"project_export_{int(time.time())}.json"
+        write_json_file(filename, export_task.result)
+        click.echo(f"Project's export results were saved into {filename}.")
+    else:
+        click.echo(f"Project {project_id} export results:\n")
+        click.echo(json.dumps(export_task.result, indent=2))
+
+    sys.exit(0)
