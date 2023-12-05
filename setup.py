@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-dependencies = ["Click", "numpy==1.24.0", "labelbox[data]"]
+dependencies = ["click", "numpy==1.24.0", "labelbox[data]"]
 
 setup(
     name="labelbox-cli",
