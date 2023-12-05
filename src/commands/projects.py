@@ -17,7 +17,7 @@ def projects():
     pass
 
 
-@projects.command()
+@projects.command("list")
 @click.option(
     "--match_projects",
     required=True,
@@ -28,7 +28,7 @@ def projects():
     "--n", default=10, help="List number of available projects.", show_default=True
 )
 @click.pass_obj
-def list(client: Client, match_projects: str, n: int):
+def list_projects(client: Client, match_projects: str, n: int):
     """
     Lists available projects with matching name.
     By default shows only first 10.
@@ -45,10 +45,10 @@ def list(client: Client, match_projects: str, n: int):
             break
 
 
-@projects.command()
+@projects.command("get")
 @click.argument("project_id", nargs=1)
 @click.pass_obj
-def get(client: Client, project_id: str):
+def get_project(client: Client, project_id: str):
     """
     Retrieves project by ID.
     """
@@ -56,7 +56,7 @@ def get(client: Client, project_id: str):
     click.echo(project)
 
 
-@projects.command()
+@projects.command("create")
 @click.option(
     "--name",
     required=True,
@@ -77,7 +77,7 @@ def get(client: Client, project_id: str):
     help="Project description. Default is empty string.",
 )
 @click.pass_obj
-def create(client: Client, name: str, description: str, project_type: str):
+def create_project(client: Client, name: str, description: str, project_type: str):
     """
     Creates new project.
     """
@@ -88,10 +88,10 @@ def create(client: Client, name: str, description: str, project_type: str):
     click.echo(f"New project has been created: \n{project}")
 
 
-@projects.command()
+@projects.command("delete")
 @click.argument("project_id", nargs=1)
 @click.pass_obj
-def delete(client: Client, project_id: str):
+def delete_project(client: Client, project_id: str):
     """
     Delete project by ID.
     """
@@ -100,7 +100,7 @@ def delete(client: Client, project_id: str):
     click.echo(f"Project with ID {project_id} has been deleted.")
 
 
-@projects.command()
+@projects.command("export")
 @click.argument("project_id", nargs=1)
 @click.option("--attachements", is_flag=True, default=False, show_default=True)
 @click.option("--metadata_fields", is_flag=True, default=False, show_default=True)
@@ -115,7 +115,7 @@ def delete(client: Client, project_id: str):
     help="Saves export results into file with the following format: project_export_epoch_time.json.",
 )
 @click.pass_obj
-def export(
+def export_export(
     client: Client,
     project_id: str,
     attachements: bool,
