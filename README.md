@@ -9,7 +9,7 @@ Basically, this tool allows you to peform simple (CRUD) actions using the Labelb
 - [Available commands](#available-commands)
 - [Usage](#usage)
     + [Print more information about the command](#print-more-information-about-the-command)
-  * [Projects](#projects)
+  * [Project](#project)
     + [Get project by ID](#get-project-by-id)
     + [Create image based project](#create-image-based-project)
     + [Delete project by ID](#delete-project-by-id)
@@ -66,7 +66,7 @@ labelbox projects
 When executed for the very first time it will ask you to provide `API_KEY` for the `Workspace`, GraphQL `ENDPOINT` if you have one and `PROFILE`name under which it will be stored. This information will be saved into 
 your home folder under `.labelbox-cli.json` file.
 
-This file is later used to retrieve `API_KEY` and executed SDK commands to your `Workspace`.
+This file is later used to retrieve `API_KEY` and execute SDK calls using commands for your `Workspace`.
 
 
 ## Available commands
@@ -96,10 +96,10 @@ labelbox [command] --help
 
 ---
 
-### Projects
+### Project
 
 ``` sh
-Usage: labelbox projects [OPTIONS] COMMAND [ARGS]...
+Usage: labelbox project [OPTIONS] COMMAND [ARGS]...
 
   Command for interacting with Projects in the workspace. Use subcommands for
   retrieveing necessary data.
@@ -118,25 +118,25 @@ Commands:
 #### Get project by ID
 
 ``` sh
-labelbox projects get PROJECT_ID
+labelbox project get PROJECT_ID
 ```
 
 #### Create image based project
 
 ``` sh
-labelbox projects create --name "New project" --project-type image
+labelbox project create --name "New project" --project-type image
 ```
 
 #### Delete project by ID
 
 ``` sh
-labelbox projects delete PROJECT_ID
+labelbox project delete PROJECT_ID
 ```
 
 #### Export project's information using Export V2
 
 ``` sh
-labelbox projects export PROJECT_ID
+labelbox project export PROJECT_ID
 ```
 
 #### Export project's infomration with different flags
@@ -144,7 +144,7 @@ labelbox projects export PROJECT_ID
 Just provide the flag you would like to export:
 
 ``` sh
-labelbox projects export PROJECT_ID --attachments --data-row-details
+labelbox project export PROJECT_ID --attachments --data-row-details
 ```
 
 Commands above are equivalent of the following code sample:
@@ -166,7 +166,7 @@ print(export_task.result)
 #### Save export output to file
 
 ``` sh
-labelbox projects export PROJECT_ID --save
+labelbox project export PROJECT_ID --save
 ```
 
 ---
