@@ -153,3 +153,20 @@ def export_export(
         click.echo(json.dumps(export_task.result, indent=2))
 
     sys.exit(0)
+
+
+@projects.command("setup-ontology")
+@click.argument("project_id", nargs=1)
+@click.argument("ontology_id", nargs=1)
+@click.pass_obj
+def setup_ontology(client: Client, project_id: str, ontology_id: str):
+    """
+    Connects existing ontology to the project.
+    """
+    project = client.get_project(project_id)
+    ontology = client.get_ontology(ontology_id)
+    project.setup_editor(ontology)
+    click.echo(
+        f"Ontology with ID {ontology_id} has been connected to Project with ID {project_id}."
+    )
+    sys.exit(0)
