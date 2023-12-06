@@ -88,3 +88,15 @@ def create_ontology(
     click.echo("New ontology has been created:\n")
     click.echo(ontology)
     sys.exit(0)
+
+
+@ontology.command("delete")
+@click.argument("ontology_id", nargs=1)
+@click.pass_obj
+def delete_ontology(client: Client, ontology_id: str):
+    """
+    Deletes unused ontology by ID.
+    """
+    client.delete_unused_ontology(ontology_id)
+    click.echo(f"Ontology with ID {ontology_id} has been deleted.")
+    sys.exit(0)

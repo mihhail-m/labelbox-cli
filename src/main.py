@@ -18,7 +18,7 @@ def cli(ctx: Context):
     if CONFIG_FILE.is_file():
         content = read_json_file(CONFIG_FILE)
         profile = find_active_profile(content)
-        client = Client(api_key=profile["api_key"], endpoint=profile["endpoint"])  # type: ignore
+        client = Client(api_key=profile["api_key"], endpoint=profile["endpoint"], rest_endpoint=profile["rest_endpoint"])  # type: ignore
         ctx.obj = client
     else:
         click.echo("Looks like you have not configured any profiles yet.")
@@ -29,12 +29,16 @@ def cli(ctx: Context):
 
         api_key = input("Enter API key for your workspace: ")
         endpoint = input("Enter GraphQL endpoint. Leave blank if you don't have one: ")
+        rest_endpoint = input(
+            "Enter REST endpoint. Leave blank if you don't have one: "
+        )
         profile_name = input("Profile name. Ex: dev, stage, labeler etc: ")
         profile = {
             profile_name: {
                 "name": profile_name,
                 "api_key": api_key,
                 "endpoint": endpoint,
+                "rest_endpoint": rest_endpoint,
                 "active": True,
             }
         }
