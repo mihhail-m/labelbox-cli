@@ -26,7 +26,10 @@ def get_ontology(client: Client, ontology_id: str):
 
 @ontology.command("list")
 @click.option(
-    "--name_contains", required=True, help="Retrieves list of ontology matched by name."
+    "--name-contains",
+    "--nc",
+    required=True,
+    help="Retrieves list of ontology matched by name.",
 )
 @click.option("--n", default=5, help="List available ontologies.", show_default=True)
 @click.pass_obj
@@ -49,12 +52,16 @@ def list_ontologies(client: Client, name_contains: str, n: int):
 
 
 @ontology.command("create")
-@click.option("--name", required=True, help="Name for the ontology.")
+@click.option("--name", "--n", required=True, help="Name for the ontology.")
 @click.option(
-    "--media_type", required=True, help="Ontology media type. Ex: image, video etc."
+    "--media_type",
+    "--m",
+    required=True,
+    help="Ontology media type. Ex: image, video etc.",
 )
 @click.option(
     "--tools",
+    "--t",
     default="",
     help='List of comma separated ID values. Ex: "toolId1,toolId2".',
     type=str,
@@ -62,7 +69,6 @@ def list_ontologies(client: Client, name_contains: str, n: int):
 @click.option(
     "--classifications",
     "--c",
-    "classifications",
     default="",
     help='List of comma separated ID values. Ex: "classificationId1,classificationId2".',
     type=str,
