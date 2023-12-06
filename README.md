@@ -3,19 +3,24 @@ This is small CLI tool written in Python for the people who appreciate the produ
 
 Basically, this tool allows you to peform simple (CRUD) actions using the Labelbox SDK through the command line. 
 
-* [Installation](#installation)
-* [Install from PIP registry](#install-from-pip-registry)
-* [Authentication](#authentication)
-* [Available commands:](#available-commands)
-* [Usage](#usage)
+- [Installation](#installation)
+- [Install from PIP registry](#install-from-pip-registry)
+- [Authentication](#authentication)
+- [Available commands](#available-commands)
+- [Usage](#usage)
     + [Print more information about the command](#print-more-information-about-the-command)
-    + [Projects](#projects)
-        - [Get project:](#get-project)
-        - [Create image based project:](#create-image-based-project)
-        - [Delete project by ID:](#delete-project-by-id)
-        - [Export project's information using Export V2:](#export-project-s-information-using-export-v2)
-        - [Export project's infomration with different flags:](#export-project-s-infomration-with-different-flags)
-        - [Save export output to file:](#save-export-output-to-file)
+  * [Projects](#projects)
+    + [Get project by ID](#get-project-by-id)
+    + [Create image based project](#create-image-based-project)
+    + [Delete project by ID](#delete-project-by-id)
+    + [Export project's information using Export V2](#export-project-s-information-using-export-v2)
+    + [Export project's infomration with different flags](#export-project-s-infomration-with-different-flags)
+    + [Save export output to file](#save-export-output-to-file)
+  * [Ontology](#ontology)
+    + [Get ontology by ID](#get-ontology-by-id)
+    + [Create ontology](#create-ontology)
+    + [Delete ontology](#delete-ontology)
+
 
 ## Installation
 
@@ -67,6 +72,7 @@ Options:
   --help  Show this message and exit.
 
 Commands:
+  ontology  Command for interacting with Ontologies.
   projects  Command for interacting with Projects in the workspace.
 ```
 
@@ -82,6 +88,7 @@ This will print more information about command eg like usage, necessary argument
 labelbox [command] --help
 ```
 
+---
 
 ### Projects
 
@@ -102,7 +109,7 @@ Commands:
   list    Lists available projects with matching name.
 ```
 
-#### Get project
+#### Get project by ID
 
 ``` sh
 labelbox projects get PROJECT_ID
@@ -128,7 +135,13 @@ labelbox projects export PROJECT_ID
 
 #### Export project's infomration with different flags
 
-This is equivalent of the following parametrs:
+Just provide the flag you would like to export:
+
+``` sh
+labelbox projects export PROJECT_ID --attachments --data_row_details
+```
+
+Commands above are equivalent of the following code sample:
 
 ``` python
 export_params= {
@@ -144,15 +157,53 @@ export_task.wait_till_done()
 print(export_task.result)
 ```
 
-Just provide the flag you would like to export:
-
-``` sh
-labelbox projects export PROJECT_ID --attachments --data_row_details
-```
-
 #### Save export output to file
 
 ``` sh
 labelbox projects export PROJECT_ID --save
 ```
+
+---
+
+### Ontology
+
+``` sh
+Usage: labelbox ontology [OPTIONS] COMMAND [ARGS]...
+
+  Command for interacting with Ontologies. Use subcommands to perform CRUD
+  operation.
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  create  Create new ontology from existing tools and classifications.
+  delete  Deletes unused ontology by ID.
+  get     Retrieve ontology by ID.
+  list    List available ontologies in the workspace.
+```
+
+#### Get ontology by ID
+
+``` sh
+labelbox ontology get ONTOLOGY_ID
+```
+
+#### Create ontology
+
+You can create new ontology from existing tools and classifications. 
+However, if `--tools` and `--classifications` parameters are not given, will simply create new empty ontology.
+
+``` sh
+labelbox ontology create --name "new-ontology" --media_type "image" --tools "toolId1, toolId2" --classifications "classificationId1, classificationId2"
+```
+
+#### Delete ontology
+
+You can only delete **unused** ontologies, meaning ontologies that are not connected to any projects.
+
+``` sh
+labelbox ontology delete ONTOLOGY_ID
+```
+
 
