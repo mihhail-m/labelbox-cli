@@ -20,7 +20,13 @@ Basically, this tool allows you to peform simple (CRUD) actions using the Labelb
     + [Get ontology by ID](#get-ontology-by-id)
     + [Create ontology](#create-ontology)
     + [Delete ontology](#delete-ontology)
-
+  * [Batch](#batch)
+    + [Get batch by ID](#get-batch-by-id)
+    + [Create batch from data row ids](#create-batch-from-data-row-ids)
+    + [Create batch from text file containing data row ids](#create-batch-from-text-file-containing-data-row-ids)
+    + [Create batch from dataset](#create-batch-from-dataset)
+    + [Delete batch by ID](#delete-batch-by-id)
+    + [Delete labels from batch](#delete-labels-from-batch)
 
 ## Installation
 
@@ -206,4 +212,63 @@ You can only delete **unused** ontologies, meaning ontologies that are not conne
 labelbox ontology delete ONTOLOGY_ID
 ```
 
+---
 
+### Batch
+
+``` sh
+Usage: labelbox batch [OPTIONS] COMMAND [ARGS]...
+
+  Command for interacting with batches in the projects.
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  create               Creates a batch for the Benchmark project using...
+  create-from-dataset  Creates batch from the dataset.
+  delete               Deletes batch by Project and Batch ID.
+  delete-labels        Deletes labels from the batch.
+  get                  Retrieves batch by Project and Batch ID.
+```
+
+#### Get batch by ID
+
+``` sh
+labelbox batch get PROJECT_ID BATCH_ID
+```
+
+#### Create batch from data row ids
+
+``` sh
+labelbox batch create --project-id PROJECT_ID --name "unique-batch-name" --rows "datarowId1, datarowId2" --priority 1
+```
+
+#### Create batch from text file containing data row ids
+
+This is useful when there are a lot of data row IDs that you wish to add to the project 
+and you don't have that fancy 34" inch curve monitor.
+
+``` sh
+labelbox batch create --project-id PROJECT_ID --name "unique-batch-name" --fp path_to_txt_file --priority 1
+```
+
+#### Create batch from dataset
+
+``` sh
+labelbox batch create-from-dataset --project-id PROJECT_ID --n "prefix-name" --dataset-id DATASET_ID
+```
+
+#### Delete batch by ID
+
+``` sh
+labelbox batch delete PROJECT_ID BATCH_ID
+```
+
+#### Delete labels from batch
+
+You can also set `--set-as-template` flag to requeue labels for the future usage.
+
+``` sh
+labelbox batch delete-labels PROJECT_ID BATCH_ID
+```
