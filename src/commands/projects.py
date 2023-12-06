@@ -10,14 +10,14 @@ from ..utils import write_json_file
 
 
 @click.group()
-def projects():
+def project():
     """
     Command for interacting with Projects in the workspace. Use subcommands for retrieveing necessary data.
     """
     pass
 
 
-@projects.command("list")
+@project.command("list")
 @click.option(
     "--match-projects",
     "--p",
@@ -45,8 +45,10 @@ def list_projects(client: Client, match_projects: str, n: int):
         if n == 0:
             break
 
+    sys.exit(0)
 
-@projects.command("get")
+
+@project.command("get")
 @click.argument("project_id", nargs=1)
 @click.pass_obj
 def get_project(client: Client, project_id: str):
@@ -55,9 +57,10 @@ def get_project(client: Client, project_id: str):
     """
     project = client.get_project(project_id)
     click.echo(project)
+    sys.exit(0)
 
 
-@projects.command("create")
+@project.command("create")
 @click.option(
     "--name",
     "--n",
@@ -90,9 +93,10 @@ def create_project(client: Client, name: str, description: str, project_type: st
         name=name, description=description, media_type=media_type
     )
     click.echo(f"New project has been created: \n{project}")
+    sys.exit(0)
 
 
-@projects.command("delete")
+@project.command("delete")
 @click.argument("project_id", nargs=1)
 @click.pass_obj
 def delete_project(client: Client, project_id: str):
@@ -102,9 +106,10 @@ def delete_project(client: Client, project_id: str):
     project = client.get_project(project_id)
     project.delete()
     click.echo(f"Project with ID {project_id} has been deleted.")
+    sys.exit(0)
 
 
-@projects.command("export")
+@project.command("export")
 @click.argument("project_id", nargs=1)
 @click.option("--attachements", is_flag=True, default=False, show_default=True)
 @click.option("--metadata-fields", is_flag=True, default=False, show_default=True)
@@ -156,11 +161,12 @@ def export_export(
     else:
         click.echo(f"Project {project_id} export results:\n")
         click.echo(json.dumps(export_task.result, indent=2))
+        sys.exit(1)
 
     sys.exit(0)
 
 
-@projects.command("setup-ontology")
+@project.command("setup-ontology")
 @click.argument("project_id", nargs=1)
 @click.argument("ontology_id", nargs=1)
 @click.pass_obj
