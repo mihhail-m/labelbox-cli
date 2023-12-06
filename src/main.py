@@ -6,10 +6,11 @@ from labelbox import Client
 
 from .commands.batch import batch
 from .commands.ontology import ontology
-from .commands.projects import projects
+from .commands.projects import project
 from .utils import find_active_profile, read_json_file, write_json_file
 
 CONFIG_FILE = Path.home() / ".labelbox-cli.json"
+SUBCOMMANDS = [project, ontology, batch]
 
 
 # TODO: Add support for multiple profiles
@@ -48,6 +49,5 @@ def cli(ctx: Context):
         click.echo(f"Configuration saved into: {CONFIG_FILE}")
 
 
-cli.add_command(projects)
-cli.add_command(ontology)
-cli.add_command(batch)
+for subcommand in SUBCOMMANDS:
+    cli.add_command(subcommand)
