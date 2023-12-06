@@ -124,7 +124,7 @@ labelbox projects get PROJECT_ID
 #### Create image based project
 
 ``` sh
-labelbox projects create --name "New project" --project_type image
+labelbox projects create --name "New project" --project-type image
 ```
 
 #### Delete project by ID
@@ -144,7 +144,7 @@ labelbox projects export PROJECT_ID
 Just provide the flag you would like to export:
 
 ``` sh
-labelbox projects export PROJECT_ID --attachments --data_row_details
+labelbox projects export PROJECT_ID --attachments --data-row-details
 ```
 
 Commands above are equivalent of the following code sample:
@@ -201,7 +201,7 @@ You can create new ontology from existing tools and classifications.
 However, if `--tools` and `--classifications` parameters are not given, will simply create new empty ontology.
 
 ``` sh
-labelbox ontology create --name "new-ontology" --media_type "image" --tools "toolId1, toolId2" --classifications "classificationId1, classificationId2"
+labelbox ontology create --name "new-ontology" --media-type "image" --tools "toolId1, toolId2" --classifications "classificationId1, classificationId2"
 ```
 
 #### Delete ontology

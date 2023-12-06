@@ -19,7 +19,8 @@ def projects():
 
 @projects.command("list")
 @click.option(
-    "--match_projects",
+    "--match-projects",
+    "--p",
     required=True,
     help="Match projects with the given name",
     type=str,
@@ -59,18 +60,21 @@ def get_project(client: Client, project_id: str):
 @projects.command("create")
 @click.option(
     "--name",
+    "--n",
     required=True,
     type=str,
     help="Name for a project. But between double quotes if name contains spaces.",
 )
 @click.option(
-    "--project_type",
+    "--project-type",
+    "--t",
     required=True,
     type=str,
     help="Type of the project. Ex: image, video etc.",
 )
 @click.option(
     "--desc",
+    "--d",
     "description",
     default="",
     type=str,
@@ -103,12 +107,13 @@ def delete_project(client: Client, project_id: str):
 @projects.command("export")
 @click.argument("project_id", nargs=1)
 @click.option("--attachements", is_flag=True, default=False, show_default=True)
-@click.option("--metadata_fields", is_flag=True, default=False, show_default=True)
-@click.option("--data_row_details", is_flag=True, default=False, show_default=True)
-@click.option("--project_details", is_flag=True, default=False, show_default=True)
-@click.option("--performance_details", is_flag=True, default=False, show_default=True)
+@click.option("--metadata-fields", is_flag=True, default=False, show_default=True)
+@click.option("--data-row-details", is_flag=True, default=False, show_default=True)
+@click.option("--project-details", is_flag=True, default=False, show_default=True)
+@click.option("--performance-details", is_flag=True, default=False, show_default=True)
 @click.option(
     "--save",
+    "--s",
     is_flag=True,
     default=False,
     show_default=True,
