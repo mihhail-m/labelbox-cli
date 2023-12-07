@@ -42,6 +42,18 @@ Navigate to the repository:
 cd labelbox-cli
 ```
 
+Create virtual environment to avoid dependency issues with already installed packages:
+
+```sh
+python -m venv .venv
+```
+
+Activate virtual environment:
+
+```sh
+source ./venv/bin/activate
+```
+
 Finally install current package:
 
 ``` sh
