@@ -106,3 +106,23 @@ def delete_ontology(client: Client, ontology_id: str):
     client.delete_unused_ontology(ontology_id)
     click.echo(f"Ontology with ID {ontology_id} has been deleted.")
     sys.exit(0)
+
+
+@ontology.command("delete-feature")
+@click.argument("ontology_id", nargs=1)
+@click.argument("feature_schema_id", nargs=1)
+@click.pass_obj
+def delete_feature_from_ontology(
+    client: Client, ontology_id: str, feature_schema_id: str
+):
+    """
+    Deletes or archives a feature schema from an ontology.
+
+    If the feature schema is a root-level node with associated labels, it will be archived.
+    If the feature schema is a nested node in the ontology without associated labels, it will be deleted.
+    If the feature schema is a nested ontology node with associated labels,
+    it will neither be deleted nor archived.
+    """
+    client.delete_feature_schema_from_ontology(ontology_id, feature_schema_id)
+    click.echo("Feature schema has been deleted.")
+    sys.exit(0)
