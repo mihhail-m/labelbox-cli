@@ -20,6 +20,7 @@ Basically, this tool allows you to peform simple (CRUD) actions using the Labelb
     + [Get ontology by ID](#get-ontology-by-id)
     + [Create ontology](#create-ontology)
     + [Delete ontology](#delete-ontology)
+    + [Delete feature from ontology](#delete-feature-from-ontology)
   * [Batch](#batch)
     + [Get batch by ID](#get-batch-by-id)
     + [Create batch from data row ids](#create-batch-from-data-row-ids)
@@ -27,6 +28,14 @@ Basically, this tool allows you to peform simple (CRUD) actions using the Labelb
     + [Create batch from dataset](#create-batch-from-dataset)
     + [Delete batch by ID](#delete-batch-by-id)
     + [Delete labels from batch](#delete-labels-from-batch)
+  * [Feature](#feature)
+    + [Get feature by ID](#get-feature-by-id)
+    + [Get feature by name](#get-feature-by-name)
+    + [Create tool](#create-tool)
+    + [Create classification](#create-classification)
+    + [Create classificaiton with option](#create-classificaiton-with-option)
+    + [Delete feature by ID](#delete-feature-by-id)
+
 
 ## Installation
 
@@ -83,6 +92,7 @@ This file is later used to retrieve `API_KEY` and execute SDK calls using comman
 
 ## Available commands
 
+
 ``` sh
 Usage: labelbox [OPTIONS] COMMAND [ARGS]...
 
@@ -90,9 +100,12 @@ Options:
   --help  Show this message and exit.
 
 Commands:
+  batch     Command for interacting with batches in the projects.
+  feature   Command for interacting with Features in the workspace.
   ontology  Command for interacting with Ontologies.
-  projects  Command for interacting with Projects in the workspace.
+  project   Command for interacting with Projects in the workspace.
 ```
+
 
 ## Usage
 
@@ -224,6 +237,13 @@ You can only delete **unused** ontologies, meaning ontologies that are not conne
 labelbox ontology delete ONTOLOGY_ID
 ```
 
+
+#### Delete feature from ontology
+
+``` sh
+labelbox ontology delete-feature ONTOLOGY_ID FEATURE_SCHEMA_ID
+```
+
 ---
 
 ### Batch
@@ -283,4 +303,82 @@ You can also set `--set-as-template` flag to requeue labels for the future usage
 
 ``` sh
 labelbox batch delete-labels PROJECT_ID BATCH_ID
+```
+
+---
+
+### Feature
+
+``` sh
+Usage: labelbox feature [OPTIONS] COMMAND [ARGS]...
+
+  Command for interacting with Features in the workspace.
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  create-classification  Creates a Classification of choosen type.
+  create-tool            Creates a Tool of a choosen type.
+  delete                 Deletes ununsed feature schema by ID...
+  get                    Get Feature by ID (featureSchemaId).
+  get-by-name            Get Feature by name.
+```
+
+#### Get feature by ID
+
+``` sh
+labelbox feature get FEATURE_SCHEMA_ID
+```
+
+#### Get feature by name
+
+``` sh
+labelbox feature get-by-name FEATURE_SCHEMA_NAME
+```
+
+#### Create tool
+
+``` sh
+labelbox feature create-tool --n "my-tool" --t bbox 
+```
+
+You can also supply `--color` argument to specify color and `--required` to mark `Tool` as required.
+
+Get more information with 
+
+```sh
+labelbox feature create-tool --help
+
+```
+
+#### Create classification
+
+**NB!** For now nested classifications are not supported.
+
+``` sh
+labelbox feature create-classification --name "my-classification" --type text
+```
+
+Get more information with 
+
+```sh
+labelbox feature create-classification --help
+
+```
+
+
+#### Create classificaiton with option
+
+``` sh
+labelbox feature create-classification --n "my-classificaiton" --type radio --options "option1,option2,option3"
+```
+
+
+#### Delete feature by ID
+
+***NB!** Only unused features can be deleted freely. 
+
+``` sh
+labelbox feature delete FEATURE_SCHEMA_ID
 ```
