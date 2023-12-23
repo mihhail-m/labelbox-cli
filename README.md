@@ -67,8 +67,16 @@ python -m venv .venv
 
 Acitave virtual environment:
 
+For MacOs/Linux users:
+
 ```sh
 source ./.venv/bin/activate
+```
+
+For Windows users:
+
+```sh
+.\venv\Scripts\activate
 ```
 
 Finally install current package:
@@ -100,7 +108,6 @@ This file is later used to retrieve `API_KEY` and execute SDK calls using comman
 
 ## Available commands
 
-
 ``` sh
 Usage: labelbox [OPTIONS] COMMAND [ARGS]...
 
@@ -109,11 +116,11 @@ Options:
 
 Commands:
   batch     Command for interacting with batches in the projects.
+  dataset   Commands for interacting with Datasets in the workspace.
   feature   Command for interacting with Features in the workspace.
   ontology  Command for interacting with Ontologies.
   project   Command for interacting with Projects in the workspace.
 ```
-
 
 ## Usage
 
