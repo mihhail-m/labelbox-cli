@@ -35,6 +35,14 @@ Basically, this tool allows you to peform simple (CRUD) actions using the Labelb
     + [Create classification](#create-classification)
     + [Create classificaiton with option](#create-classificaiton-with-option)
     + [Delete feature by ID](#delete-feature-by-id)
+  * [Dataset](#dataset)
+    + [Get dataset by ID](#get-dataset-by-id)
+    + [Create new dataset](#create-new-dataset)
+    + [Append data to dataset](#append-data-to-dataset)
+    + [Export data from dataset](#export-data-from-dataset)
+    + [Save export output to file](#save-export-output-to-file-1)
+    + [Delete dataset by ID](#delete-dataset-by-id)
+    + [Update dataset name](#update-dataset-name)
 
 
 ## Installation
@@ -177,10 +185,10 @@ Commands above are equivalent of the following code sample:
 ``` python
 export_params= {
   "attachments": True,
-  "metadata_fields": True,
+  "metadata_fields": False,
   "data_row_details": True,
-  "project_details": True,
-  "performance_details": True
+  "project_details": False,
+  "performance_details": False
 }
 
 export_task = project.export_v2(params=export_params)
@@ -381,4 +389,155 @@ labelbox feature create-classification --n "my-classificaiton" --type radio --op
 
 ``` sh
 labelbox feature delete FEATURE_SCHEMA_ID
+```
+
+---
+
+### Dataset
+
+``` sh
+Usage: labelbox dataset [OPTIONS] COMMAND [ARGS]...
+
+  Commands for interacting with Datasets in the workspace.
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  append  Add data rows to a selected Dataset.
+  create  Creates new empty Dataset in the Catalog.
+  delete  Deletes Dataset by ID.
+  export  Exports dataset's information.
+  get     Get Dataset by ID.
+  update  Updates dataset name.
+```
+
+#### Get dataset by ID
+
+``` sh
+labelbox dataset get DATASET_ID
+```
+
+#### Create new dataset
+This will create just an empty dataset. You would then need to append data separately.
+
+``` sh
+labelbox dataset --n new_empty_dataset
+```
+
+#### Append data to dataset
+
+There are many ways to append assets to the desired dataset via CLI.
+
+You can also provide desired values for __global keys__ with `--global-keys` flag. However, if this argument is not specified random UUID values would be assigned to global keys instead.
+
+1. Append assets as comma separated list of URLs
+
+``` sh
+labelbox dataset append DATASET_ID --r "urlToMyImage.png,urlToMyImage2.png"
+```
+
+2. Append assets as comma separate list of URLs with Global Keys.
+
+``` sh
+labelbox dataset append DATASET_ID --r "urlToMyImage.png,urlToMyImage2.png" --global-keys "uniqueKeyForFirstUrl,uniqueKeyForSecondsUrl"
+```
+
+3. Upload single local file to dataset.
+
+``` sh
+labelbox dataset append DATASET_ID --f path-to-local-file
+```
+
+4. Append assets from JSON file (most common way of uploading data). 
+
+In this case it is assumed that global keys are already present in the JSON file for each `row_data`.
+
+``` sh
+labelbox dataset append DATASET_ID --json path-to-json-file
+```
+
+5. Appends assets from CSV file.
+
+For now most basic way of csv file is supported.
+
+__NB!__ Don't forget to specify column headers!
+
+Example of `.csv` file:
+
+``` csv
+row_data,global_key
+url-some-file,unique-key-1
+url-to-another-file,unique-key-2
+```
+
+Feel free to drop `global_key` column if don't need it.
+
+``` sh
+labelbox dataset append DATASET_ID --csv path-to-csv-file
+```
+
+#### Export data from dataset
+
+Just provide the flag you would like to export information with. You can see all the flag by adding `--help` subcommand.
+
+``` sh
+labelbox dataset export DATASET_ID --data-row-details
+```
+
+Commands above are equivalent of the following code sample:
+
+``` python
+export_params= {
+  "attachments": False,
+  "metadata_fields": False,
+  "data_row_details": True,
+  "project_details": False,
+  "performance_details": False
+}
+
+export_task = dataset.export_v2(params=export_params)
+export_task.wait_till_done()
+print(export_task.result)
+```
+
+If you want to export information for particular projects
+
+``` sh
+labelbox dataset export DATASET_ID --project-details --project-ids "projectId1,projectId2"
+```
+
+Python equivalent would be:
+
+``` python
+export_params= {
+  "attachments": False,
+  "metadata_fields": False,
+  "data_row_details": True,
+  "project_details": True,
+  "performance_details": False,
+  "project_ids": ["projectId1","projectId2"]
+}
+
+export_task = dataset.export_v2(params=export_params)
+export_task.wait_till_done()
+print(export_task.result)
+```
+
+#### Save export output to file
+
+``` sh
+labelbox dataset export DATASET_ID --s
+```
+
+#### Delete dataset by ID
+
+``` sh
+labelbox dataset delete DATASET_ID
+```
+
+#### Update dataset name
+
+``` sh
+labelbox dataset update DATASET_ID new-name
 ```
