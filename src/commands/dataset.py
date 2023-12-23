@@ -1,12 +1,14 @@
 import csv
+import json
 import sys
+import time
 import uuid
 from pathlib import Path
 
 import click
 from labelbox import Client, IAMIntegration
 
-from src.utils import read_json_file
+from ..utils import read_json_file, write_json_file
 
 
 @click.group()
@@ -152,4 +154,88 @@ def add_data_rows(
         sys.exit(1)
 
     click.echo("Assets have been uploaded.")
+    sys.exit(0)
+
+
+@dataset.command("export")
+@click.argument("dataset_id", nargs=1)
+@click.option("--attachements", is_flag=True, show_default=True)
+@click.option("--metadata-fields", is_flag=True, show_default=True)
+@click.option("--data-row-details", is_flag=True, show_default=True)
+@click.option("--project-details", is_flag=True, show_default=True)
+@click.option("--performance-details", is_flag=True, show_default=True)
+@click.option(
+    "--project-ids",
+    "--pi",
+    default="",
+    help="Comma separated list of Project IDs for which to export data.",
+)
+@click.option(
+    "--model-run-ids",
+    "--mi",
+    default="",
+    help="Comma separated list of Model Run IDs for which to export data.",
+)
+@click.option(
+    "--save",
+    "--s",
+    is_flag=True,
+    default=False,
+    show_default=True,
+    help="Saves export results into file with the following format: dataset_export_epoch_time.json.",
+)
+@click.pass_obj
+def export_dataset(
+    client: Client,
+    dataset_id: str,
+    attachements: bool,
+    metadata_fields: bool,
+    data_row_details: bool,
+    project_details: bool,
+    performance_details: bool,
+    project_ids: str,
+    model_run_ids: str,
+    save: bool,
+):
+    """
+    Exports dataset's information.
+    """
+    projects = [
+        project_id for project_id in project_ids.split(",") if project_ids != ""
+    ]
+    model_runs = [
+        model_run_id for model_run_id in model_run_ids.split(",") if model_run_ids != ""
+    ]
+
+    export_params = {
+        "attachments": attachements,
+        "metadata_fields": metadata_fields,
+        "data_row_details": data_row_details,
+        "project_details": project_details,
+        "performance_details": performance_details,
+    }
+
+    if len(projects) > 0:
+        export_params["project_ids"] = projects  # type: ignore
+
+    if len(model_runs) > 0:
+        export_params["model_runs_ids"] = model_runs  # type: ignore
+
+    dataset = client.get_dataset(dataset_id)
+    export_task = dataset.export_v2(params=export_params)  # type: ignore
+    export_task.wait_till_done()
+
+    if err := export_task.errors:
+        click.echo(err)
+        sys.exit(1)
+
+    if save:
+        filename = Path.home() / "Desktop" / f"dataset_export_{int(time.time())}.json"
+        write_json_file(filename, export_task.result)
+        click.echo(f"Dataset's export results were saved into {filename}.")
+    else:
+        click.echo(f"Dataset {dataset_id} export results:\n")
+        click.echo(json.dumps(export_task.result, indent=2))
+        sys.exit(1)
+
     sys.exit(0)
