@@ -239,3 +239,17 @@ def export_dataset(
         sys.exit(1)
 
     sys.exit(0)
+
+
+@dataset.command("update")
+@click.argument("dataset_id", nargs=1)
+@click.argument("name", nargs=1)
+@click.pass_obj
+def update_dataset_name(client: Client, dataset_id: str, name: str):
+    """
+    Updates dataset name.
+    """
+    dataset = client.get_dataset(dataset_id)
+    dataset.update(name=name)
+    click.echo("Dataset name has been updated.")
+    sys.exit(0)
