@@ -111,11 +111,11 @@ def delete_project(client: Client, project_id: str):
 
 @project.command("export")
 @click.argument("project_id", nargs=1)
-@click.option("--attachements", is_flag=True, default=False, show_default=True)
-@click.option("--metadata-fields", is_flag=True, default=False, show_default=True)
-@click.option("--data-row-details", is_flag=True, default=False, show_default=True)
-@click.option("--project-details", is_flag=True, default=False, show_default=True)
-@click.option("--performance-details", is_flag=True, default=False, show_default=True)
+@click.option("--attachements", is_flag=True, show_default=True)
+@click.option("--metadata-fields", is_flag=True, show_default=True)
+@click.option("--data-row-details", is_flag=True, show_default=True)
+@click.option("--project-details", is_flag=True, show_default=True)
+@click.option("--performance-details", is_flag=True, show_default=True)
 @click.option(
     "--save",
     "--s",
@@ -125,7 +125,7 @@ def delete_project(client: Client, project_id: str):
     help="Saves export results into file with the following format: project_export_epoch_time.json.",
 )
 @click.pass_obj
-def export_export(
+def export_project(
     client: Client,
     project_id: str,
     attachements: bool,
@@ -150,12 +150,11 @@ def export_export(
     export_task.wait_till_done()
 
     if err := export_task.errors:
-        click.echo("There were errors in the export.")
         click.echo(err)
         sys.exit(1)
 
     if save:
-        filename = Path.home() / f"project_export_{int(time.time())}.json"
+        filename = Path.home() / "Desktop" / f"project_export_{int(time.time())}.json"
         write_json_file(filename, export_task.result)
         click.echo(f"Project's export results were saved into {filename}.")
     else:
