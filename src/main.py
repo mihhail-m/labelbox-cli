@@ -4,14 +4,11 @@ import click
 from click import Context
 from labelbox import Client
 
-from .commands.batch import batch
-from .commands.feature import feature
-from .commands.ontology import ontology
-from .commands.projects import project
+from .commands import batch, dataset, feature, ontology, project
 from .utils import find_active_profile, read_json_file, write_json_file
 
 CONFIG_FILE = Path.home() / ".labelbox-cli.json"
-SUBCOMMANDS = [project, ontology, batch, feature]
+SUBCOMMANDS = [project, ontology, batch, feature, dataset]
 
 
 # TODO: Add support for multiple profiles
